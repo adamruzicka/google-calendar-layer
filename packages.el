@@ -26,10 +26,14 @@
         "agf" 'org-gcal-fetch))
     :config
     (setq org-gcal-down-days 365)   ;; Set org-gcal to download events a year in advance
-    (add-hook 'after-init-hook 'org-gcal-fetch)
-    (add-hook 'kill-emacs-hook 'org-gcal-sync)
-    (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
-    (run-with-idle-timer 600 t 'google-calendar/org-gcal-update)))
+    (when google-calendar-fetch-on-init
+      (add-hook 'after-init-hook 'org-gcal-fetch))
+    (when google-calendar-sync-on-exit
+      (add-hook 'kill-emacs-hook 'org-gcal-sync))
+    (when google-calendar-sync-after-capture
+      (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture))
+    (when google-calendar-sync-interval
+      (run-with-idle-timer google-calendar-sync-interval t 'google-calendar/org-gcal-update))))
 
 (defun google-calendar/init-calfw ()
   "Initialize calfw"
